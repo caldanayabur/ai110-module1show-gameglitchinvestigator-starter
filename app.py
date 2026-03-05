@@ -1,6 +1,7 @@
 import random
 import streamlit as st
 
+#FIX: Refactored by implementing missing functionality and fixing bug using Copilot Agent mode
 from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score
 
 HINT_MESSAGES = {
@@ -21,7 +22,7 @@ difficulty = st.sidebar.selectbox(
     ["Easy", "Normal", "Hard"],
     index=1,
 )
-
+#FIX: Refactored by fixing bug using Copilot Agent mode
 attempt_limit_map = {
     "Easy": 10,
     "Normal": 7,
@@ -36,7 +37,7 @@ st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
 
 if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
-
+#FIX: Refactored by fixing bug using Copilot Agent mode
 if "attempts" not in st.session_state:
     st.session_state.attempts = 0
 
@@ -50,7 +51,7 @@ if "history" not in st.session_state:
     st.session_state.history = []
 
 st.subheader("Make a guess")
-
+#FIX: Refactored by implementing missing functionality using Copilot Agent mode
 st.info(
     f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
@@ -75,7 +76,7 @@ with col2:
     new_game = st.button("New Game 🔁")
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
-
+#FIX: Refactored by fixing bug using Copilot Agent mode
 if new_game:
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(low, high)
@@ -102,7 +103,7 @@ if submit:
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
-
+#FIX: Refactored by fixing bug using Copilot Agent mode
         outcome = check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
