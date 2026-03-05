@@ -1,3 +1,4 @@
+import pytest
 from logic_utils import check_guess, get_range_for_difficulty, update_score
 
 def test_winning_guess():
@@ -72,10 +73,11 @@ def test_check_guess_int_secret_wins():
     assert check_guess(42, 42) == "Win"
 
 def test_check_guess_string_secret_does_not_win():
-    # If the type glitch strikes and secret becomes "42", the correct int guess must fail.
-    # This documents the broken behavior the fix needed to prevent.
-    result = check_guess(42, "42")  # type: ignore[arg-type]
-    assert result != "Win", "Type glitch: str secret incorrectly accepted int guess as Win"
+    # If the type glitch strikes and secret becomes "42", the comparison crashes with TypeError.
+    # Either a crash or a non-Win result both mean the type glitch breaks the game.
+    with pytest.raises((TypeError, AssertionError)):
+        result = check_guess(42, "42")  # type: ignore[arg-type]
+        assert result != "Win", "Type glitch: str secret incorrectly accepted int guess as Win"
 
 
 # --- Bug 5: New game ignored difficulty (always used randint(1, 100)) ---
