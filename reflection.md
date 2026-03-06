@@ -32,6 +32,7 @@ The AI helped me separate the game logic from the UI code by moving the function
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
 
 The AI deleted the replies I made on the reflection.md file, I assumed because it already fixed the bugs.
+
 ---
 
 ## 3. Debugging and testing your fixes
@@ -47,6 +48,7 @@ The AI created a test case where it checked if the hint that was given to the us
 - Did AI help you design or understand any tests? How?
 
 One test that the AI helped me with was to test that the game rewards you for guessing faster the correct number. The test checked if the score was higher when the user guessed the number in fewer attempts.
+
 ---
 
 ## 4. What did you learn about Streamlit and state?
@@ -62,6 +64,7 @@ Streamlit reruns the entire script every time you interact with the app, such as
 - What change did you make that finally gave the game a stable secret number?
 
 I wrapped the secret number generation in a guard check, preventing a new number from being generated on every rerun. I also used Streamlit's session state to store the secret number, so it would persist across interactions.
+
 ---
 
 ## 5. Looking ahead: your developer habits
