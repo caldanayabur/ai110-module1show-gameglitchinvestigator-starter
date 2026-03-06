@@ -8,6 +8,7 @@ HINT_MESSAGES = {
     "Win": "🎉 Correct!",
     "Too High": "📉 Go LOWER!",
     "Too Low": "📈 Go HIGHER!",
+    "Out of Range": "⚠️ That number is out of range!",
 }
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
@@ -94,16 +95,17 @@ if st.session_state.status != "playing":
     st.stop()
 
 if submit:
-    st.session_state.attempts += 1
-
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
-        st.session_state.history.append(raw_guess)
         st.error(err)
+    elif guess_int < low or guess_int > high:
+        st.error(f"Out of range! Please enter a number between {low} and {high}.")
     else:
+        st.session_state.attempts += 1
         st.session_state.history.append(guess_int)
-#FIX: Refactored by fixing bug using Copilot Agent mode
+
+        #FIX: Refactored by fixing bug using Copilot Agent mode
         outcome = check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
