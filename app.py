@@ -6,8 +6,8 @@ from logic_utils import get_range_for_difficulty, parse_guess, check_guess, upda
 
 HINT_MESSAGES = {
     "Win": "Perfect! 🎯",
-    "Too High": "Too High! (Go Lower 👇)",
-    "Too Low": "Too Low! (Go Higher 👆)",
+    "Too High": "📉 Go LOWER!",
+    "Too Low": "📈 Go HIGHER!",
     "Out of Range": "⚠️ That number is out of range!",
 }
 
@@ -83,8 +83,8 @@ if st.session_state.status != "playing":
         st.subheader("📋Your Journey")
         result_emoji = {
             "Win": "Perfect! 🎯",
-            "Too High": "Too High! (Go Lower 👇)",
-            "Too Low": "Too Low! (Go Higher 👆)",
+            "Too High": "📉 Go LOWER!",
+            "Too Low": "📈 Go HIGHER!",
             "Out of Range": "⚠️ Out of Range",
         }
         table_data = [

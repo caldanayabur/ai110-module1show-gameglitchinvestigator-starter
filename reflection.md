@@ -66,3 +66,6 @@ Nex time I would identify the bugs myself before asking the AI for help, as the 
 
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
 This project made me realize the importance of testing AI generated code and also checking more carefully the suggestions that the AI gives.
+
+## Challenge 5: AI Model Comparison
+
