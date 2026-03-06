@@ -5,10 +5,17 @@ import streamlit as st
 from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score, load_high_score, save_high_score, reset_high_score
 
 HINT_MESSAGES = {
-    "Win": "🎉 Correct!",
-    "Too High": "📉 Go LOWER!",
-    "Too Low": "📈 Go HIGHER!",
+    "Win": "Perfect! 🎯",
+    "Too High": "Too High! (Go Lower 👇)",
+    "Too Low": "Too Low! (Go Higher 👆)",
     "Out of Range": "⚠️ That number is out of range!",
+}
+
+HINT_DISPLAY = {
+    "Win": st.success,
+    "Too High": st.warning,
+    "Too Low": st.warning,
+    "Out of Range": st.error,
 }
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
@@ -58,6 +65,49 @@ if "status" not in st.session_state:
 if "history" not in st.session_state:
     st.session_state.history = []
 
+if "end_message" not in st.session_state:
+    st.session_state.end_message = None
+
+if st.session_state.status != "playing":
+    if st.session_state.end_message:
+        if st.session_state.status == "won":
+            st.success(st.session_state.end_message)
+        else:
+            st.error(st.session_state.end_message)
+    elif st.session_state.status == "won":
+        st.success("✅ You already won. Start a new game to play again.")
+    else:
+        st.error("❌ Game over. Start a new game to try again.")
+
+    if st.session_state.history:
+        st.subheader("📋Your Journey")
+        result_emoji = {
+            "Win": "Perfect! 🎯",
+            "Too High": "Too High! (Go Lower 👇)",
+            "Too Low": "Too Low! (Go Higher 👆)",
+            "Out of Range": "⚠️ Out of Range",
+        }
+        table_data = [
+            {
+                "Attempt": entry["attempt"],
+                "Guess": entry["guess"],
+                "Result": result_emoji.get(entry["result"], entry["result"]),
+            }
+            for entry in st.session_state.history
+        ]
+        st.table(table_data)
+
+    if st.button("New Game 🔁"):
+        st.session_state.attempts = 0
+        st.session_state.secret = random.randint(low, high)
+        st.session_state.score = 0
+        st.session_state.status = "playing"
+        st.session_state.history = []
+        st.session_state.end_message = None
+        st.rerun()
+
+    st.stop()
+
 st.subheader("Make a guess")
 #FIX: Refactored by implementing missing functionality using Copilot Agent mode
 st.info(
@@ -91,15 +141,9 @@ if new_game:
     st.session_state.score = 0
     st.session_state.status = "playing"
     st.session_state.history = []
+    st.session_state.end_message = None
     st.success("New game started.")
     st.rerun()
-
-if st.session_state.status != "playing":
-    if st.session_state.status == "won":
-        st.success("You already won. Start a new game to play again.")
-    else:
-        st.error("Game over. Start a new game to try again.")
-    st.stop()
 
 if submit:
     ok, guess_int, err = parse_guess(raw_guess)
@@ -110,13 +154,14 @@ if submit:
         st.error(f"Out of range! Please enter a number between {low} and {high}.")
     else:
         st.session_state.attempts += 1
-        st.session_state.history.append(guess_int)
+        st.session_state.history.append({"attempt": st.session_state.attempts, "guess": guess_int, "result": None})
 
         #FIX: Refactored by fixing bug using Copilot Agent mode
         outcome = check_guess(guess_int, st.session_state.secret)
+        st.session_state.history[-1]["result"] = outcome
 
         if show_hint:
-            st.warning(HINT_MESSAGES[outcome])
+            HINT_DISPLAY[outcome](HINT_MESSAGES[outcome])
 
         st.session_state.score = update_score(
             current_score=st.session_state.score,
@@ -129,20 +174,22 @@ if submit:
             st.session_state.status = "won"
             is_new_record = save_high_score(st.session_state.score)
             win_msg = (
-                f"You won! The secret was {st.session_state.secret}. "
+                f"🎉 You won! The secret was {st.session_state.secret}. "
                 f"Final score: {st.session_state.score}"
             )
             if is_new_record:
-                win_msg += " NEW HIGH SCORE!"
-            st.success(win_msg)
+                win_msg += " 🏆 NEW HIGH SCORE!"
+            st.session_state.end_message = win_msg
+            st.rerun()
         else:
             if st.session_state.attempts >= attempt_limit:
                 st.session_state.status = "lost"
-                st.error(
-                    f"Out of attempts! "
+                st.session_state.end_message = (
+                    f"💀 Out of attempts! "
                     f"The secret was {st.session_state.secret}. "
                     f"Score: {st.session_state.score}"
                 )
+                st.rerun()
 
 st.divider()
 st.caption("Built by an AI that claims this code is production-ready.")

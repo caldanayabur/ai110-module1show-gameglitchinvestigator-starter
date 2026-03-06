@@ -57,3 +57,7 @@ I asked Copilot to help me create a high score feature that would store the high
 It added two new functions to the logic_utils.py file, save_high_score and load_high_score, and it also modified the app.py file to call these functions and display the high score on the UI.
 
 Finally, I asked Copilot to create a "Reset High Score" button that would reset the high score to 0 when clicked.
+
+## Challenge 4: Enhanced Game UI
+
+![alt text](image-2.png)
