@@ -69,3 +69,8 @@ This project made me realize the importance of testing AI generated code and als
 
 ## Challenge 5: AI Model Comparison
 
+I told ChatGPT and Gemini that the hints in the game were backwards, and I asked them to fix the code.
+
+Both models gave me a similar fix. However, Gemini went a step further by fixing the section of the code that randomly converts the secret number into a string on even-numbered attempts. It then provided a final solution for the bug I reported, along with an extra piece of code to ensure both the guess and the secret number are integers before comparing them.
+
+Overall, I think Gemini’s fix is more complete.
