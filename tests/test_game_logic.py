@@ -1,5 +1,5 @@
 import pytest
-from logic_utils import check_guess, get_range_for_difficulty, update_score
+from logic_utils import check_guess, get_range_for_difficulty, update_score, parse_guess
 
 def test_winning_guess():
     # If the secret is 50 and guess is 50, it should be a win
@@ -99,13 +99,14 @@ def test_hard_range_differs_from_normal():
 # update_score uses attempt_number; starting at 0 gives max points on first win.
 
 def test_first_attempt_win_gives_max_points():
-    # attempt_number=0 => points = 100 - 10*(0+1) = 90
-    score = update_score(0, "Win", 0)
-    assert score == 90, f"First-attempt win should score 90, got {score}"
+    # In the game, attempts is incremented to 1 before update_score is called.
+    # attempt_number=1 => points = 100 - 10*(1-1) = 100
+    score = update_score(0, "Win", 1)
+    assert score == 100, f"First-attempt win should score 100, got {score}"
 
 def test_second_attempt_win_gives_fewer_points():
-    score_first = update_score(0, "Win", 0)
-    score_second = update_score(0, "Win", 1)
+    score_first = update_score(0, "Win", 1)
+    score_second = update_score(0, "Win", 2)
     assert score_first > score_second, "Earlier wins should score more than later wins"
 
 
@@ -116,4 +117,37 @@ def test_easy_range_is_not_hardcoded_1_to_100():
     low, high = get_range_for_difficulty("Easy")
     assert (low, high) != (1, 100), (
         "Easy range was hardcoded to 1-100 (the Normal range); should be 1-20"
+    )
+
+
+# --- Edge case 1: parse_guess silently truncates decimals ---
+# "3.9" should NOT be silently accepted as 3; it is an invalid guess.
+
+def test_parse_guess_decimal_is_rejected():
+    ok, _, _ = parse_guess("3.9")
+    assert not ok, "Decimal input '3.9' should be rejected, not silently truncated to 3"
+
+
+# --- Edge case 2: parse_guess accepts out-of-range numbers without complaint ---
+# parse_guess alone does not enforce game range, so an extremely large value
+# passes through. This test documents the gap so callers know to validate range.
+
+def test_parse_guess_extremely_large_value_passes_through():
+    ok, value, _ = parse_guess("99999999999999999")
+    assert ok, "parse_guess should successfully parse a large number"
+    assert value == 99999999999999999, "Parsed value should match the large integer exactly"
+    # NOTE: range validation must happen in the caller; parse_guess alone won't catch this.
+
+
+# --- Edge case 3: update_score with a negative attempt_number gives an inflated win bonus ---
+# attempt_number=-1 produces 100 - 10*(0) = 100 points, the theoretical maximum.
+# This tests that a logically impossible attempt number is not silently rewarded.
+
+def test_update_score_negative_attempt_number_does_not_exceed_max_valid_score():
+    # The highest legitimate score on attempt 0 is 90 (100 - 10*1).
+    max_valid_first_attempt_score = update_score(0, "Win", 0)  # 90
+    inflated_score = update_score(0, "Win", -1)               # 100
+    assert inflated_score <= max_valid_first_attempt_score, (
+        f"Negative attempt_number yielded {inflated_score} points, "
+        f"exceeding the legitimate max of {max_valid_first_attempt_score}"
     )

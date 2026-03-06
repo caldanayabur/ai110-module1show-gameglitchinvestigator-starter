@@ -2,7 +2,7 @@ import random
 import streamlit as st
 
 #FIX: Refactored by implementing missing functionality and fixing bug using Copilot Agent mode
-from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score
+from logic_utils import get_range_for_difficulty, parse_guess, check_guess, update_score, load_high_score, save_high_score, reset_high_score
 
 HINT_MESSAGES = {
     "Win": "🎉 Correct!",
@@ -17,6 +17,13 @@ st.title("🎮 Game Glitch Investigator")
 st.caption("An AI-generated guessing game. Something is off.")
 
 st.sidebar.header("Settings")
+
+st.sidebar.divider()
+st.sidebar.metric("High Score", load_high_score())
+if st.sidebar.button("Reset High Score"):
+    reset_high_score()
+    st.rerun()
+st.sidebar.divider()
 
 difficulty = st.sidebar.selectbox(
     "Difficulty",
@@ -120,10 +127,14 @@ if submit:
         if outcome == "Win":
             st.balloons()
             st.session_state.status = "won"
-            st.success(
+            is_new_record = save_high_score(st.session_state.score)
+            win_msg = (
                 f"You won! The secret was {st.session_state.secret}. "
                 f"Final score: {st.session_state.score}"
             )
+            if is_new_record:
+                win_msg += " NEW HIGH SCORE!"
+            st.success(win_msg)
         else:
             if st.session_state.attempts >= attempt_limit:
                 st.session_state.status = "lost"

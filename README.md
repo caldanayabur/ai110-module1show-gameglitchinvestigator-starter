@@ -43,3 +43,17 @@ Mapping to the right hint messages, fixed the logic of hard and easy mode, incre
 ## 🚀 Stretch Features
 
 - [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
+
+## Challenge 1: Advanced Edge-Case Testing
+
+The last three are the three edge-cases that Copilot identified in the game for challenge 1:
+![alt text](image-1.png)
+
+
+## Challenge 2: Feature Expansion via Agent Mode
+
+I asked Copilot to help me create a high score feature that would store the highest score achieved by the player in a text file, and change it everytime the player achieves a new high score. I also asked it to display the current high score on the game UI.
+
+It added two new functions to the logic_utils.py file, save_high_score and load_high_score, and it also modified the app.py file to call these functions and display the high score on the UI.
+
+Finally, I asked Copilot to create a "Reset High Score" button that would reset the high score to 0 when clicked.
