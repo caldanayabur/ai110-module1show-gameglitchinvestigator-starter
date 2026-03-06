@@ -26,12 +26,19 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 📝 Document Your Experience
 
 - [ ] Describe the game's purpose.
+The game's purpose is to guess a random generated number between a range that is given to the user based on the difficulty level they choose. For that you have a certain number of attempts, and after each guess, you get a hint if your guess is too high or too low. The game also has a scoring system that rewards you for guessing the number in fewer attempts.
+
 - [ ] Detail which bugs you found.
+The game was giving me wrong hints, the "hard" mode was easier than normal mode, the "easy" mode had fewer attempts than normal mode, the game ignored difficulty level and always gave the same number of attempts. And finally, the game didn't prevent me from entering invalid inputs such as an out of range number.
+
 - [ ] Explain what fixes you applied.
+Mapping to the right hint messages, fixed the logic of hard and easy mode, increase the number of attempts for easy mode, and added input validation to prevent invalid inputs.
 
 ## 📸 Demo
 
 - [ ] [Insert a screenshot of your fixed, winning game here]
+![alt text](image.png)
+
 
 ## 🚀 Stretch Features
 
